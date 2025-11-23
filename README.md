@@ -96,3 +96,7 @@ The `stack.stack_info(tab_id)` function returns:
 ## Why use it?
 
 Ideal for when you need multiple panes but want to focus on one at a time - like having your editor in one pane, tests in another, and logs in a third.
+
+## Limitations
+
+Wezterm does not provide an API for closing a pane, and the default behaviour when closing one via the keybindings will take you out of zoom mode. I am still to find a solution for closing a pane and keeping the zoomed in state.
