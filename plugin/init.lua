@@ -18,15 +18,17 @@ function M.apply_to_config(_, user_opts)
 	end
 
 	if opts.enrich_tab_title then
-		wezterm.on("format-tab-title", function(tab_info)
+
+    wezterm.on("format-tab-title", function(tab_info)
       local stack_info = M.stack_info(tab_info.tab_id)
+      local title = M.tab_title(tab_info)
 
       if not stack_info then
-        return tab_info.tab_title
+        return title
       end
 
-			return tab_info.tab_title .. " [" .. stack_info.index .. "/" .. stack_info.count .. "]"
-		end)
+      return title .. " [" .. stack_info.index .. "/" .. stack_info.count .. "]"
+    end)
 	end
 end
 
@@ -51,6 +53,21 @@ function M.stack_info(tab_id)
     count = pane_count
   }
 end
+
+function M.tab_title(tab_info)
+  local title = tab_info.tab_title
+  local index = tab_info.tab_index + 1
+
+  -- if the tab title is explicitly set, take that
+  if title and #title > 0 then
+    return index .. ": " .. title
+  end
+
+  -- Otherwise, use the title from the active pane
+  -- in that tab
+  return index .. ": " .. tab_info.active_pane.title
+end
+
 
 M.action.SpawnPane = wezterm.action_callback(function(window, pane)
 	pane:split({ domain = opts.spawn_domain, direction = opts.spawn_direction })
